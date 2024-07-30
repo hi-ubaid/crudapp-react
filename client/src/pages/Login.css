@@ -1,0 +1,98 @@
+/* Login.css */
+.registration-container {
+  font-family: 'Arial', sans-serif;
+  background: #f0f2f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+}
+
+.registration-form {
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 360px;
+  padding: 2rem;
+  text-align: center;
+  padding-right: 3.9rem;
+}
+
+.registration-form h1 {
+  font-size: 1.8rem;
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.2rem;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  color: #333;
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(38, 143, 255, 0.2);
+}
+
+.submit-button {
+  width: 100%;
+  padding: 0.8rem;
+  background: #007bff;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.submit-button:hover {
+  background: #0056b3;
+}
+
+.error-message, .success-message {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  border-radius: 5px;
+  padding: 0.8rem;
+  color: #ffffff;
+}
+
+.error-message {
+  background: #e74c3c;
+}
+
+.success-message {
+  background: #2ecc71;
+}
+
+span {
+  display: block;
+  margin-top: 1.2rem;
+}
+
+a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}

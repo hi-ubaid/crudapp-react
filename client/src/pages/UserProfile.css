@@ -1,0 +1,63 @@
+/* UserProfile.css */
+.profileContainer {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profileHeader {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+
+.profileImage {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 1.5rem;
+}
+
+.profileDetails {
+  flex: 1;
+}
+
+.profileName {
+  font-size: 2rem;
+  margin: 0;
+  color: #333;
+}
+
+.profileEmail, .profileId {
+  font-size: 1rem;
+  color: #555;
+}
+
+.editButton {
+  display: block;
+  width: 200px;
+  padding: 0.8rem;
+  margin: 0 auto;
+  background: #4a90e2;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.editButton:hover {
+  background-color: #357abd;
+}
+
+.noData {
+  text-align: center;
+  color: #888;
+}

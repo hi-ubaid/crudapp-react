@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
 import './AddEmployee.css';
 import Axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { useSuccessMessage } from '../Context/SuccessContext';
 
 export const AddEmployee = () => {
     const [name, setName] = useState("");
     const [age, setAge] = useState("");
     const [team, setTeam] = useState("");
     const [position, setPosition] = useState("");
-    const [error, setError] = useState(""); // State to manage error messages
+    const [error, setError] = useState("");
+    const {successMessage, setSuccessMessage} = useSuccessMessage();
+
+    const navigate = useNavigate();
 
     const handleClickEffect = async () => {
         try {
@@ -24,6 +29,10 @@ export const AddEmployee = () => {
             setPosition("");
             setError(""); // Clear any previous error message
             console.log("Success");
+            navigate('/employees');
+
+            setSuccessMessage("Employee Added!");
+            setTimeout(()=> setSuccessMessage(''), 1500);
         } catch (error) {
             setError("Failed to submit the form. Please try again.");
             console.error("Error:", error);
@@ -31,6 +40,8 @@ export const AddEmployee = () => {
     };
 
     return (
+        <div>
+            <h1>Add Employee</h1>
         <div className="form-container">
             <input
                 type="text"
@@ -62,6 +73,10 @@ export const AddEmployee = () => {
             />
             <button className="submit-button" onClick={handleClickEffect}>Submit</button>
             {error && <p className="error-message">{error}</p>} {/* Display error message if exists */}
+            {successMessage && (
+                        <div className="success-message">{successMessage}</div>
+            )}
+        </div>
         </div>
     );
 };
