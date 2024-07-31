@@ -1,4 +1,3 @@
-// App.js
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AddEmployee } from './Components/AddEmployee';
@@ -18,22 +17,31 @@ function App() {
       <AuthProvider>
         <Router>
           <AuthContext.Consumer>
-            {({ loggedinUser }) => (
-              <>
-                {loggedinUser && <Navbar />}
-                <Routes>
-                  <Route element={<PrivateRoutes />}>
-                    <Route path="/add" element={<AddEmployee />} />
-                    <Route path="/employees" element={<ShowEmployee />} />
-                    <Route path="/user" element={<UserProfile />} />
-                  </Route>
-                  <Route element={<PublicRoute />}>
-                    <Route path="/" element={<Registration />} />
-                    <Route path="/login" element={<Login />} />
-                  </Route>
-                </Routes>
-              </>
-            )}
+            {({ loggedinUser, loading }) => {
+              console.log("AuthContext consumer:", { loggedinUser, loading }); // Debug statement
+              return (
+                <>
+                  {loading ? (
+                    <div>Loading...</div>
+                  ) : (
+                    <>
+                      {loggedinUser && <Navbar />}
+                      <Routes>
+                        <Route element={<PrivateRoutes />}>
+                          <Route path="/add" element={<AddEmployee />} />
+                          <Route path="/employees" element={<ShowEmployee />} />
+                          <Route path="/user" element={<UserProfile />} />
+                        </Route>
+                        <Route element={<PublicRoute />}>
+                          <Route path="/" element={<Registration />} />
+                          <Route path="/login" element={<Login />} />
+                        </Route>
+                      </Routes>
+                    </>
+                  )}
+                </>
+              );
+            }}
           </AuthContext.Consumer>
         </Router>
       </AuthProvider>

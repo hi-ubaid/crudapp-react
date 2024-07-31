@@ -1,0 +1,105 @@
+.profileContainer {
+  max-width: 800px;
+  margin: 200px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+}
+
+.profileContent {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.profileImageContainer {
+  width: 200px;
+  text-align: center;
+}
+
+.profileImage {
+  width: 150px;
+  height: 150px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 2px solid #ddd;
+}
+
+.profileButtons {
+  margin-top: 10px;
+}
+
+.followButton,
+.messageButton {
+  display: block;
+  width: 80px;
+  padding: 5px;
+  font-size: 0.9em;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 5px auto;
+  transition: background-color 0.3s ease;
+}
+
+.followButton:hover,
+.messageButton:hover {
+  background-color: #0056b3;
+}
+
+.profileDetails {
+  flex: 1;
+  margin-left: 20px;
+}
+
+.profileTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.profileLabel {
+  font-weight: bold;
+  padding: 8px;
+  text-align: left;
+  width: 30%;
+}
+
+.profileValue {
+  padding: 8px;
+  text-align: left;
+  color: #666;
+}
+
+.editButton {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  font-size: 1em;
+  color: #fff;
+  background-color: #28a745;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+}
+
+.editButton:hover {
+  background-color: #218838;
+}
+
+.loading {
+  text-align: center;
+  font-size: 1.2em;
+  color: #888;
+}
+
+.error {
+  text-align: center;
+  font-size: 1.2em;
+  color: #e74c3c;
+}

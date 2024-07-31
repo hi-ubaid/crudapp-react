@@ -1,4 +1,3 @@
-// Registration.js
 import React, { useState } from 'react';
 import Axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +9,7 @@ const Registration = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [profilePicture, setProfilePicture] = useState(null);
     const [error, setError] = useState("");
     const { successMessage, setSuccessMessage } = useSuccessMessage();
     const navigate = useNavigate();
@@ -38,17 +38,29 @@ const Registration = () => {
             return;
         }
 
-        Axios.post("http://localhost:3010/register", {
-                name: name,
-                email: email,
-                password: password,
-            })
-        .then((res)=> {
+        if (profilePicture && profilePicture.size > 2 * 1024 * 1024) {
+            setError("Profile picture must be less than 2 MB.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('email', email);
+        formData.append('password', password);
+        formData.append('profilePicture', profilePicture);
+
+        Axios.post("http://localhost:3010/register", formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+        .then((res) => {
             // Clear the form fields on successful submission
             setName("");
             setEmail("");
             setPassword("");
             setConfirmPassword("");
+            setProfilePicture(null);
             setError(""); // Clear any previous error message
             console.log("Success");
             navigate('/add');
@@ -105,6 +117,16 @@ const Registration = () => {
                         id="confirmPassword"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
+                        className="form-control"
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="profilePicture">Profile Picture</label>
+                    <input
+                        type="file"
+                        id="profilePicture"
+                        onChange={(e) => setProfilePicture(e.target.files[0])}
                         className="form-control"
                     />
                 </div>
