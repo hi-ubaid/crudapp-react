@@ -1,4 +1,3 @@
-// Login.js
 import React, { useState, useContext } from 'react';
 import './Login.css';
 import Axios from 'axios';
@@ -12,7 +11,8 @@ const Login = () => {
   const [error, setError] = useState("");
   const { successMessage, setSuccessMessage } = useSuccessMessage("");
   const { login } = useContext(AuthContext);
-  const navigate  = useNavigate();
+  const navigate = useNavigate();
+  const [isAdmin, setIsAdmin] = useState(false);
 
   Axios.defaults.withCredentials = true;
 
@@ -22,6 +22,7 @@ const Login = () => {
     Axios.post("http://localhost:3010/login", {
       email,
       password,
+      isAdmin
     })
       .then(res => {
         if (!res.data.auth) {
@@ -31,8 +32,7 @@ const Login = () => {
           setPassword("");
           setError("");
           setSuccessMessage("Logged In");
-          localStorage.setItem("token", res.data.token);
-          login();
+          login(res.data.user); // Pass user data to context
           setTimeout(async () => await setSuccessMessage(''), 1500);
           navigate("/add");
         }
@@ -69,6 +69,15 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
+          </div>
+          <div className="form-group">
+            <input
+              type="checkbox"
+              id="isAdmin"
+              checked={isAdmin}
+              onChange={(e) => setIsAdmin(e.target.checked)}
+            />
+            <label className="superAdmin">Super Admin</label>
           </div>
           <button type="submit" className="submit-button">Login</button>
           {error && <p className="error-message">{error}</p>}

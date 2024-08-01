@@ -10,6 +10,8 @@ import PublicRoute from './Components/PublicRoute';
 import { Navbar } from './Components/Navbar';
 import { AuthProvider, AuthContext } from './Context/AuthContext';
 import UserProfile from './pages/UserProfile';
+import AdminProfiles from './pages/AdminProfiles';
+import SuperPrivateRoute from './Components/SuperPrivateRoute';
 
 function App() {
   return (
@@ -18,7 +20,6 @@ function App() {
         <Router>
           <AuthContext.Consumer>
             {({ loggedinUser, loading }) => {
-              console.log("AuthContext consumer:", { loggedinUser, loading }); // Debug statement
               return (
                 <>
                   {loading ? (
@@ -31,6 +32,10 @@ function App() {
                           <Route path="/add" element={<AddEmployee />} />
                           <Route path="/employees" element={<ShowEmployee />} />
                           <Route path="/user" element={<UserProfile />} />
+                          {/* Use SuperPrivateRoute for super admin access */}
+                          <Route element={<SuperPrivateRoute />}>
+                            <Route path="/admins" element={<AdminProfiles />} />
+                          </Route>
                         </Route>
                         <Route element={<PublicRoute />}>
                           <Route path="/" element={<Registration />} />

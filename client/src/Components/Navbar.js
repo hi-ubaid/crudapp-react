@@ -1,4 +1,3 @@
-// Navbar.js
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import './Navbar.css';
@@ -19,6 +18,10 @@ export const Navbar = () => {
             <Link to="/add" className="nav-link">Add Employees</Link>
             <Link to="/employees" className="nav-link">Employees</Link>
             <Link to="/user" className="nav-link">Profile</Link>
+            {/* Show the Admins link only if the user is a super admin */}
+            {loggedinUser.isSuperAdmin && (
+              <Link to="/admins" className="nav-link">Admins</Link>
+            )}
             <button onClick={logout} className="nav-link-button">Logout</button>
           </>
         )}

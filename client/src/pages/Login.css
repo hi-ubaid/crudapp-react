@@ -36,6 +36,11 @@
   margin-bottom: 0.5rem;
 }
 
+.superAdmin {
+  font-size: 0.9rem;
+  color: #666;
+}
+
 .form-control {
   width: 100%;
   padding: 0.8rem;

@@ -4,35 +4,29 @@ import Axios from 'axios';
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [loggedinUser, setLoggedinUser] = useState(() => {
-    const savedUser = localStorage.getItem('loggedinUser');
-    return savedUser ? JSON.parse(savedUser) : false;
-  });
-
+  const [loggedinUser, setLoggedinUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     Axios.get("http://localhost:3010/login")
       .then(res => {
-        const isLoggedIn = res.data.loggedIn;
-        console.log("API response:", res.data); // Debug statement
-        setLoggedinUser(isLoggedIn);
-        localStorage.setItem('loggedinUser', JSON.stringify(isLoggedIn));
+        const user = res.data.user;
+        setLoggedinUser(user);
+        localStorage.setItem('loggedinUser', JSON.stringify(user));
       })
       .catch(err => console.log("API error:", err))
       .finally(() => setLoading(false));
   }, []);
 
-  const login = () => {
-    setLoggedinUser(true);
-    localStorage.setItem('loggedinUser', true);
+  const login = (user) => {
+    setLoggedinUser(user);
+    localStorage.setItem('loggedinUser', JSON.stringify(user));
   };
 
   const logout = () => {
     Axios.post("http://localhost:3010/logout")
       .then(() => {
-        localStorage.removeItem("token");
-        setLoggedinUser(false);
+        setLoggedinUser(null);
         localStorage.removeItem('loggedinUser');
       })
       .catch(err => console.log(err));

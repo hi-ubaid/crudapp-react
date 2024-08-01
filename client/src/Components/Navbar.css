@@ -20,6 +20,10 @@
   font-weight: bold;
 }
 
+.navbar-title-link:hover {
+  text-decoration: none; /* Ensure no underline on hover */
+}
+
 .nav-links {
   display: flex;
   align-items: center;

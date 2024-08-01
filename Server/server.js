@@ -20,14 +20,14 @@ const verifyJWT = (req, res, next) => {
     } else {
         jwt.verify(token, "jwtSecret", (err, decoded) => {
             if (err) {
-                res.json({ auth: false, message: "failed to authenticate" });
+                res.json({ auth: false, message: "Failed to authenticate" });
             } else {
                 req.userId = decoded.id;
                 next();
             }
-        })
+        });
     }
-}
+};
 
 app.use(cors({
     origin: "http://localhost:3000",
@@ -77,7 +77,7 @@ const upload = multer({
     }
 });
 
-//dbCOnnected
+//dbConnected
 const db = mysql.createConnection({
     port: 3307,
     user: 'root',
@@ -89,38 +89,34 @@ const db = mysql.createConnection({
 //Employee Additions
 //ADD EMPLOYEE
 app.post("/create", (req, res) => {
-    const name = req.body.name;
-    const age = req.body.age;
-    const team = req.body.team;
-    const position = req.body.position;
-    db.query('INSERT INTO employees (name,age,team,position) VALUES(?,?,?,?)',
+    const { name, age, team, position } = req.body;
+    db.query('INSERT INTO employees (name, age, team, position) VALUES (?, ?, ?, ?)',
         [name, age, team, position],
         (err, result) => {
             if (err) {
                 console.log(err);
+                res.status(500).send("Error inserting employee");
             } else {
-                res.send("Values Inserted");
+                res.send("Employee added");
             }
         });
 });
 
 //SHOW EMPLOYEE
 app.get("/employees", (req, res) => {
-    db.query('SELECT * FROM employees',
-        (err, result) => {
-            if (err) {
-                console.log(err);
-            } else {
-                res.send(result);
-            }
+    db.query('SELECT * FROM employees', (err, result) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send("Error fetching employees");
+        } else {
+            res.send(result);
         }
-    )
+    });
 });
 
 //UPDATE EMPLOYEE
 app.put("/update", (req, res) => {
-    const id = req.body.id;
-    const age = req.body.age;
+    const { id, age } = req.body;
     db.query('UPDATE employees SET age = ? WHERE id = ?',
         [age, id],
         (err, result) => {
@@ -135,8 +131,7 @@ app.put("/update", (req, res) => {
 
 //DELETE EMPLOYEE
 app.delete("/delete/:id", (req, res) => {
-    const id = req.params.id;
-
+    const { id } = req.params;
     db.query('DELETE FROM employees WHERE id = ?', [id], (err, result) => {
         if (err) {
             console.log(err);
@@ -150,9 +145,7 @@ app.delete("/delete/:id", (req, res) => {
 //ADMINS
 //Admin registered
 app.post('/register', upload.single('profilePicture'), (req, res) => {
-    const name = req.body.name;
-    const email = req.body.email;
-    const password = req.body.password;
+    const { name, email, password } = req.body;
     const profilePicture = req.file ? req.file.filename : null;
     console.log('Uploaded file:', profilePicture); // Log the filename
     bcrypt.hash(password, saltRounds, (err, hash) => {
@@ -168,55 +161,104 @@ app.post('/register', upload.single('profilePicture'), (req, res) => {
                     console.error("Error inserting into database:", err);
                     return res.status(500).send("Error processing request.");
                 } else {
-                    res.send("Admin Added");
+                    res.send("Admin added");
                 }
             });
     });
 });
 
-
 app.get('/isUserAuth', verifyJWT, (req, res) => {
-    res.send("You are authenticated!")
-})
+    res.send("You are authenticated!");
+});
 
 // Admin Login
+// Admin Login
 app.post('/login', (req, res) => {
-    const email = req.body.email;
-    const password = req.body.password;
-
-    db.query('SELECT * FROM admin WHERE email = ?', email, (err, result) => {
-        if (err) {
-            return res.status(500).send({ err: err });
-        }
-
+    const { email, password, isAdmin } = req.body;
+  
+    if (isAdmin) {
+      // Super admin login logic (assuming super admin table is named superAdmin)
+      db.query('SELECT * FROM superAdmin WHERE email = ?', [email], (err, result) => {
+        if (err) return res.status(500).send({ err });
+  
         if (result.length > 0) {
-            bcrypt.compare(password, result[0].password, (err, isMatch) => {
-                if (err) {
-                    return res.status(500).send({ err: err });
-                }
-
-                if (isMatch) {
-                    const user = {
-                        id: result[0].adminID,
-                        name: result[0].name,
-                        email: result[0].email,
-                        profilePicture: result[0].profilePicture
-                    };
-
-                    const token = jwt.sign({ id: user.id }, 'jwtSecret', {
-                        expiresIn: 300,
-                    })
-
-                    req.session.user = user;
-                    console.log(req.session.user);
-
-                    res.json({ auth: true, token: token, user: req.session.user })
-                } else {
-                    res.json({ auth: false, message: "Wrong email or password" })
-                }
-            });
+          if (password === result[0].password) {
+            const user = {
+              id: result[0].adminID,
+              name: result[0].name,
+              email: result[0].email,
+              profilePicture: result[0].profilePicture,
+              isSuperAdmin: true
+            };
+  
+            const token = jwt.sign({ id: user.id }, 'jwtSecret', { expiresIn: 300 });
+            req.session.user = user;
+            res.json({ auth: true, token, user });
+          } else {
+            res.json({ auth: false, message: "Wrong email or password" });
+          }
         } else {
-            res.json({ auth: false, message: "No user exists" })
+          res.json({ auth: false, message: "No user exists" });
+        }
+      });
+    } else {
+      // Regular admin login logic
+      db.query('SELECT * FROM admin WHERE email = ?', [email], (err, result) => {
+        if (err) return res.status(500).send({ err });
+  
+        if (result.length > 0) {
+          if (result[0].status === 0) {
+            return res.json({ auth: false, message: "Your account has been disabled" });
+          }
+  
+          bcrypt.compare(password, result[0].password, (err, isMatch) => {
+            if (err) return res.status(500).send({ err });
+  
+            if (isMatch) {
+              const user = {
+                id: result[0].adminID,
+                name: result[0].name,
+                email: result[0].email,
+                profilePicture: result[0].profilePicture,
+                isSuperAdmin: false
+              };
+  
+              const token = jwt.sign({ id: user.id }, 'jwtSecret', { expiresIn: 300 });
+              req.session.user = user;
+              res.json({ auth: true, token, user });
+            } else {
+              res.json({ auth: false, message: "Wrong email or password" });
+            }
+          });
+        } else {
+          res.json({ auth: false, message: "No user exists" });
+        }
+      });
+    }
+  });
+  
+// Update admin status
+app.put('/admin/status', (req, res) => {
+    const { adminID, status } = req.body;
+  
+    db.query('UPDATE admin SET status = ? WHERE adminID = ?', [status, adminID], (err, result) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send("Error updating admin status");
+      } else {
+        res.send("Admin status updated");
+      }
+    });
+  });
+  
+// Get all admins
+app.get('/admins', (req, res) => {
+    db.query('SELECT * FROM admin', (err, result) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send("Error fetching admins");
+        } else {
+            res.send(result);
         }
     });
 });
